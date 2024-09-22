@@ -32,9 +32,6 @@ int main() {
         break;
         case 4:
         break;
-        // ruben puto
-          //hola mundo que chingue su madre el america
-          //hola putaaa arremangala arrempujala
     }
     return 0;
 }
