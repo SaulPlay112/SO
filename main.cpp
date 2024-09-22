@@ -15,7 +15,7 @@ void datosGenerales(dato* n, int id, int tiempo, int prioridad) {
 }
 int main() {
     cout<<"Ingresa una opcion: \n";
-    cout<<"Ingresar valores-[1]";
+    cout<<"Ingresar valores-[1]\n";
     cout<<"FIFO-[2]\n";
     cout<<"SJF-[3]\n";
     cout<<"R.R-[4]\n";
@@ -25,15 +25,18 @@ int main() {
     cin>>opcion;
     switch (opcion) {
         case 1:
-            void fifo();
+            void agregarDatos();
         break;
         case 2:
-            void sjf();
+            void fifo();
         break;
         case 3:
-            void r_r();
+            void sjf();
         break;
         case 4:
+            void r_r();
+        break;
+        case 5:
             void prioridad();
         break;
     }
