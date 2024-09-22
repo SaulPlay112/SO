@@ -13,7 +13,17 @@ void datosGenerales(dato* n, int id, int tiempo, int prioridad) {
     n -> tiempo = tiempo;
     n -> prioridad = prioridad;
 }
+// inicializar las funciones (metodos)
+void datosGenerales(dato* n, int id, int tiempo, int prioridad);
+void agregarDatos();
+void fifo();
+void sjf();
+void r_r();
+void prioridad();
+
 int main() {
+    int opcion;
+    do{
     cout<<"Ingresa una opcion: \n";
     cout<<"Ingresar valores-[1]\n";
     cout<<"FIFO-[2]\n";
@@ -21,25 +31,25 @@ int main() {
     cout<<"R.R-[4]\n";
     cout<<"Prioridad-[5]\n";
     cout<<"Salir-[0]\n";
-    int opcion;
     cin>>opcion;
     switch (opcion) {
         case 1:
-            void agregarDatos();
+             agregarDatos();
         break;
         case 2:
-            void fifo();
+             fifo();
         break;
         case 3:
-            void sjf();
+            sjf();
         break;
         case 4:
-            void r_r();
+            r_r();
         break;
         case 5:
-            void prioridad();
+            prioridad();
         break;
     }
+}while (opcion != 0);
     return 0;
 
 }
