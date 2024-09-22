@@ -3,13 +3,12 @@
 using namespace std;
 
 typedef struct snode {
-    string mensaje;
     snode *id;
     snode *tiempo;
     snode *prioridad;
 } dato;
 
-void asigna(dato &n, dato *id, dato *tiempo, dato *prioridad) {
+void asigna(dato&n,dato *id, dato *tiempo, dato *prioridad) {
     n.id = id;
     n.tiempo = tiempo;
     n.prioridad = prioridad;
@@ -38,11 +37,21 @@ int main() {
         break;
     }
     return 0;
+
 }
 // funciones para los tiempos
 
 void fifo() {
+    cout<< " Cuantos procesos quieres ingresar:"<< endl;
+    cin>>*id;
+    dato node[a];
+    for (int i = 1; i < a; i++) {
 
+cout << "Dime el tiempo del"<<i<<" :"<<endl;
+
+
+
+    }
 }
 void sjf() {
 
