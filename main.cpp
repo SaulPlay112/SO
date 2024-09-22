@@ -25,19 +25,20 @@ int main() {
     cin>>opcion;
     switch (opcion) {
         case 1:
+            void fifo();
         break;
         case 2:
+            void sjf();
         break;
         case 3:
+            void r_r();
         break;
         case 4:
+            void prioridad();
         break;
-
     }
     return 0;
 }
-
-
 // funciones para los tiempos
 
 void fifo() {
