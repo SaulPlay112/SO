@@ -7,7 +7,7 @@ struct dato {
     int tiempo;
     int prioridad;
 };
-
+// datos generales apuntando a la estructura
 void datosGenerales(dato* n, int id, int tiempo, int prioridad) {
     n -> id = id;
     n -> tiempo = tiempo;
