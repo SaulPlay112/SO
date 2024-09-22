@@ -2,23 +2,24 @@
 #include <string>
 using namespace std;
 
-typedef struct snode {
-    snode *id;
-    snode *tiempo;
-    snode *prioridad;
-} dato;
+struct dato {
+    int id;
+    int tiempo;
+    int prioridad;
+};
 
-void asigna(dato&n,dato *id, dato *tiempo, dato *prioridad) {
-    n.id = id;
-    n.tiempo = tiempo;
-    n.prioridad = prioridad;
+void datosGenerales(dato* n, int id, int tiempo, int prioridad) {
+    n -> id = id;
+    n -> tiempo = tiempo;
+    n -> prioridad = prioridad;
 }
 int main() {
     cout<<"Ingresa una opcion: \n";
-    cout<<"FIFO-[1]\n";
-    cout<<"SJF-[2]\n";
-    cout<<"R.R-[3]\n";
-    cout<<"Prioridad-[4]\n";
+    cout<<"Ingresar valores-[1]";
+    cout<<"FIFO-[2]\n";
+    cout<<"SJF-[3]\n";
+    cout<<"R.R-[4]\n";
+    cout<<"Prioridad-[5]\n";
     cout<<"Salir-[0]\n";
     int opcion;
     cin>>opcion;
@@ -42,23 +43,62 @@ int main() {
 // funciones para los tiempos
 
 void fifo() {
-    cout<< " Cuantos procesos quieres ingresar:"<< endl;
-    cin>>*id;
-    dato node[a];
-    for (int i = 1; i < a; i++) {
-
-cout << "Dime el tiempo del"<<i<<" :"<<endl;
-
-
-
-    }
 }
+
 void sjf() {
-
 }
+
 void r_r() {
-
 }
-void prioridad() {
 
+void prioridad() {
+}
+void agregarDatos() {
+    cout<<"FIFO-[1]\n";
+    cout<<"SJF-[2]\n";
+    cout<<"R.R-[3]\n";
+    cout<<"Prioridad-[4]\n";
+    int opcion;
+    cin>>opcion;
+if(opcion==1 || opcion==2 || opcion==3) {
+    int a;
+    cout<<"Ingresa los procesos: \n";
+    cin>>a;
+
+    dato* node = new dato[a];
+    for (int i = 0; i < a; i++) {
+        int id, tiempo;
+        cout<<"Ingresa el id del proceso: "<< i + 1<<": ";
+        cin>>id;
+        cout<<"Ingresa el tiempo del proceso: "<< i + 1<<": ";
+        cin>>tiempo;
+        datosGenerales(&node[i], id, tiempo,0);
+    }
+    cout << "\nProcesos ingresados: \n";
+    for (int i = 0; i < a; i++) {
+        cout << "ID: " << node[i].id << ", Tiempo: " << node[i].tiempo << endl;
+    }
+    delete[] node;
+}else if (opcion == 4) {
+    int a;
+    cout<<"Ingresa los procesos: \n";
+    cin>>a;
+
+    dato* node = new dato[a];
+    for (int i = 0; i < a; i++) {
+        int id, tiempo, prioridad;
+        cout<<"Ingresa el id del proceso: "<< i + 1<<": ";
+        cin>>id;
+        cout<<"Ingresa el tiempo del proceso: "<< i + 1<<": ";
+        cin>>tiempo;
+        cout<<"Ingresa la prioridad de: "<< i + 1<< ": ";
+        cin>>prioridad;
+        datosGenerales(&node[i], id, tiempo, prioridad);
+    }
+    cout << "\nProcesos ingresados: \n";
+    for (int i = 0; i < a; i++) {
+        cout << "ID: " << node[i].id << ", Tiempo: " << node[i].tiempo <<", Prioridad: "<< node[i].prioridad<<endl;
+    }
+    delete[] node;
+}
 }
