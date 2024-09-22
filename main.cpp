@@ -1,7 +1,8 @@
 #include <iostream>
 #include <string>
 using namespace std;
-
+//se creo la estructura con los datos inicializados
+//Si ves este mensaje Saul significa que ya funciona las actualizaciones (mandame mensaje si ves esto para confirmarlo )
 struct dato {
     int id;
     int tiempo;
