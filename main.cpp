@@ -11,6 +11,7 @@ struct nodo {
     // SAUL- cree el constructor para utilizar la lista enlazada para los procesos
     nodo(int proceso, int tiempo , int prioridad) : id(proceso), t(tiempo), p(prioridad), siguiente(nullptr) {}
 };
+// Ruben - creo agregar nodos
 void agregarnodo(nodo*& cabeza, int id, int tiempo, int prioridad) {
     nodo* nuevoNodo = new nodo(id, tiempo, prioridad);  // Crear nuevo nodo dinámico
 
@@ -24,7 +25,7 @@ void agregarnodo(nodo*& cabeza, int id, int tiempo, int prioridad) {
         temp->siguiente = nuevoNodo;  // Conecta el nuevo nodo al final de la lista
     }
 }
-
+// ruben - creo liberar lista
 void liberarLista(nodo*& cabeza) {
     nodo* temp;
     while (cabeza != nullptr) {
@@ -33,6 +34,7 @@ void liberarLista(nodo*& cabeza) {
         delete temp;  // Libera la memoria del nodo actual
     }
 }
+// Ruben - creo imprimir lista
 void imprimirLista(nodo* cabeza) {
     if (cabeza == nullptr) {
         cout << "La lista está vacía." << endl;
@@ -45,6 +47,7 @@ void imprimirLista(nodo* cabeza) {
         temp = temp->siguiente;
     }
 }
+// Ruben - creo pedirdatos
 void pedirdatos() {
     nodo* cabeza = nullptr;
     int cantidadNodos;
@@ -72,7 +75,7 @@ void pedirdatos() {
     liberarLista(cabeza);
 }
 
-
+// Ruben - creo el main
 int main() {
     int opcion;
     do{
