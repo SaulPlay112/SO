@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 using namespace std;
 
 // Estructura del nodo
@@ -51,12 +52,11 @@ void imprimirLista(nodo* cabeza) {
 }
 
 // Función para pedir datos
-void pedirdatos(nodo*& cabeza) {  // Se pasa cabeza por referencia
+void pedirdatos(vector<vector<int>> & datos) {  // Se pasa cabeza por referencia
     int cantidadNodos;
 
     cout << "Ingrese la cantidad de nodos: ";
     cin >> cantidadNodos;
-
     for (int i = 0; i < cantidadNodos; i++) {
         int id, tiempo, prioridad;
 
@@ -67,10 +67,15 @@ void pedirdatos(nodo*& cabeza) {  // Se pasa cabeza por referencia
         cin >> tiempo;
         cout << "Prioridad: ";
         cin >> prioridad;
-
-        agregarnodo(cabeza, id, tiempo, prioridad);  // Agrega el nodo a la lista
+        datos.push_back({id, tiempo, prioridad});
     }
-    imprimirLista(cabeza);  // Imprime la lista
+}
+
+// funcion para pasar los datos del vector a una lista enlazada
+void tranferirDatos(vector<vector<int>> & datos, nodo*& cabeza) {
+    for (auto& a : datos) {
+        agregarnodo(cabeza,a[0],a[1],a[2]);
+    }
 }
 
 // Función FIFO
@@ -108,6 +113,7 @@ void fifo(nodo* cabeza) {
 // Main
 int main() {
     nodo* cabeza = nullptr;  // Inicializar la lista de procesos
+    vector<vector<int>> datos;
     int opcion;
     do {
         cout << "Ingresa una opcion: \n";
@@ -121,9 +127,10 @@ int main() {
 
         switch (opcion) {
             case 1:
-                pedirdatos(cabeza);  // Pasar la lista por referencia
+                pedirdatos(datos);  // Pasar la lista por referencia
                 break;
             case 2:
+                tranferirDatos(datos, cabeza);
                 fifo(cabeza);  // Pasar la lista a la función FIFO
                 break;
             case 3:
