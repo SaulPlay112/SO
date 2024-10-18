@@ -110,6 +110,57 @@ void fifo(nodo* cabeza) {
 }
 
 
+nodo* seleccionarMayorPrioridad(nodo* cabeza) {
+    if (cabeza == nullptr) {
+        return nullptr;
+    }
+
+    nodo* mayorPrioridad = cabeza;
+    nodo* actual = cabeza->siguiente;
+
+
+    while (actual != nullptr) {
+        if (actual->p < mayorPrioridad->p) {
+            mayorPrioridad = actual;
+        }
+        actual = actual->siguiente;
+    }
+    return mayorPrioridad;
+}
+
+void ejecutarYRemoverProceso(nodo*& cabeza, nodo* proceso) {
+    if (cabeza == nullptr || proceso == nullptr) {
+        return;
+    }
+
+    if (cabeza == proceso) {
+        cabeza = cabeza->siguiente;
+    } else {
+        nodo* actual = cabeza;
+        while (actual->siguiente != proceso) {
+            actual = actual->siguiente;
+        }
+        actual->siguiente = proceso->siguiente;
+    }
+
+
+    cout << "Ejecutando proceso ID: " << proceso->id << " con prioridad " << proceso->p << endl;
+
+    delete proceso;  // Liberamos la memoria del proceso
+}
+
+void ejecutarPorPrioridad(nodo*& cabeza) {
+    while (cabeza != nullptr) {
+
+        nodo* proceso = seleccionarMayorPrioridad(cabeza);
+
+        ejecutarYRemoverProceso(cabeza, proceso);
+    }
+
+    cout << "Todos los procesos han sido ejecutados por prioridad.\n";
+}
+
+
 // Main
 int main() {
     nodo* cabeza = nullptr;  // Inicializar la lista de procesos
@@ -140,7 +191,8 @@ int main() {
                 // Implementar Round Robin
                 break;
             case 5:
-                // Implementar Prioridad
+                tranferirDatos(datos, cabeza);
+                ejecutarPorPrioridad(cabeza);
                 break;
             case 0:
                 cout << "Saliendo del programa." << endl;
