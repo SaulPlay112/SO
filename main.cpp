@@ -5,11 +5,12 @@ using namespace std;
 // Estructura del nodo
 struct nodo {
     int id;
-    int t;
-    int p;
+    int t; // Tiempo restante
+    int p; // Prioridad
+    int t_llegada; // Para manejar el tiempo de llegada en Round Robin
     nodo* siguiente;
 
-    nodo(int proceso, int tiempo, int prioridad) : id(proceso), t(tiempo), p(prioridad), siguiente(nullptr) {}
+    nodo(int proceso, int tiempo, int prioridad) : id(proceso), t(tiempo), p(prioridad), t_llegada(0), siguiente(nullptr) {}
 };
 
 void ejecutarYRemoverProceso(nodo*& cabeza, nodo* proceso);
@@ -152,31 +153,53 @@ void ejecutarSJF(nodo*& cabeza) {
 
 // Función Round Robin
 void roundRobin(nodo*& cabeza) {
-    int sumaTiempos = 0;
-    double promedio = calcularPromedio(cabeza, sumaTiempos);
-    int quantum = static_cast<int>(promedio);  // El quantum es el promedio de los tiempos
+    int quantum = 7; // Definir un quantum fijo o calcularlo
+    int tiempoTotal = 0;
+    int tiemposRetorno[100] = {0};  // Para almacenar los tiempos de retorno de cada proceso
+    int tiemposEspera[100] = {0};   // Para almacenar los tiempos de espera
+    int procesos = 0;
 
-    cout << "Quantum calculado: " << quantum << endl;
+    cout << "Quantum definido: " << quantum << endl;
 
+    nodo* actual = cabeza;
     while (cabeza != nullptr) {
-        nodo* actual = cabeza;
+        actual = cabeza;
         while (actual != nullptr) {
-            if (actual->t > quantum) {
-                cout << "Ejecutando proceso ID: " << actual->id << " con quantum de " << quantum << endl;
-                actual->t -= quantum;
-            } else {
-                cout << "Ejecutando proceso ID: " << actual->id << " - Tiempo restante: " << actual->t << endl;
-                nodo* siguiente = actual->siguiente;
-                ejecutarYRemoverProceso(cabeza, actual);
-                actual = siguiente;
-                continue;
+            if (actual->t > 0) {
+                int tiempoEjecutado = min(quantum, actual->t);
+                tiemposEspera[actual->id] += tiempoTotal - actual->t_llegada; // Tiempo de espera
+
+                actual->t -= tiempoEjecutado;
+                tiempoTotal += tiempoEjecutado;
+                actual->t_llegada = tiempoTotal;  // Actualizamos la llegada para la próxima ronda
+
+                // Si el proceso ha terminado, calculamos el tiempo de retorno
+                if (actual->t == 0) {
+                    tiemposRetorno[actual->id] = tiempoTotal;
+                    cout << "Proceso ID: " << actual->id << " ha terminado. Tiempo de retorno: " << tiemposRetorno[actual->id] << endl;
+                    procesos++;
+                }
             }
             actual = actual->siguiente;
         }
     }
 
-    cout << "Suma total de tiempos (Round Robin): " << sumaTiempos << endl;
-    cout << "Promedio de tiempos (Round Robin): " << promedio << "\n" << endl;
+    // Calcular el promedio de tiempos de retorno y espera
+    int sumaTiemposEspera = 0;
+    int sumaTiemposRetorno = 0;
+
+    for (int i = 0; i < 100; i++) {
+        if (tiemposRetorno[i] > 0) {
+            sumaTiemposRetorno += tiemposRetorno[i];
+            sumaTiemposEspera += tiemposEspera[i];
+        }
+    }
+
+    cout << "Tiempo promedio de espera (Round Robin): " << (double)sumaTiemposEspera / procesos << endl;
+    cout << "Tiempo promedio de retorno (Round Robin): " << (double)sumaTiemposRetorno / procesos << "\n" << endl;
+
+    // Liberar la lista después de terminar el Round Robin
+    liberarLista(cabeza);
 }
 
 // Función de prioridad
@@ -226,6 +249,7 @@ void ejecutarYRemoverProceso(nodo*& cabeza, nodo* proceso) {
     delete proceso;
 }
 
+
 // Main
 int main() {
     nodo* cabeza = nullptr;
@@ -248,19 +272,22 @@ int main() {
             break;
             case 2:
                 tranferirDatos(datos, cabeza);
-            fifo(cabeza);
+                fifo(cabeza);
+                liberarLista(cabeza);  // Liberar después de FIFO
             break;
             case 3:
                 tranferirDatos(datos, cabeza);
-            ejecutarSJF(cabeza);
+                ejecutarSJF(cabeza);
+                liberarLista(cabeza);  // Liberar después de SJF
             break;
             case 4:
                 tranferirDatos(datos, cabeza);
-            roundRobin(cabeza);
+                roundRobin(cabeza);  // La función ya incluye la liberación de la lista
             break;
             case 5:
                 tranferirDatos(datos, cabeza);
-            ejecutarPorPrioridad(cabeza);
+                ejecutarPorPrioridad(cabeza);
+                liberarLista(cabeza);  // Liberar después de Prioridad
             break;
             case 0:
                 cout << "Saliendo del programa." << endl;
