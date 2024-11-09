@@ -33,7 +33,24 @@ void agregarNodo(nodo*& cabeza, int id, int tiempo, int prioridad) {
         temp->siguiente = nuevoNodo;
     }
 }
+void mostrarLista(nodo* cabeza) {
+    nodo* temp = cabeza;
+    while (temp != nullptr) {
+        cout << temp->id << " | " << temp->t;
+        if (temp->siguiente != nullptr) {
+            cout << "  <-  ";
+        }
+        temp = temp->siguiente;
+    }
+    cout << endl;
+}
+void eliminarNodo(nodo*& cabeza) {
+    if (cabeza == nullptr) return;
 
+    nodo* temp = cabeza;
+    cabeza = cabeza->siguiente;
+    delete temp;
+}
 // Función para liberar la lista
 void liberarLista(nodo*& cabeza) {
     nodo* temp;
@@ -62,7 +79,7 @@ void imprimirLista(nodo* cabeza) {
 // Función para pedir datos
 void pedirDatos(vector<vector<int>>& datos) {
     int cantidadNodos;
-    cout << "Ingrese la cantidad de nodos: ";
+    cout << "Ingrese la cantidad de nodos: "<<endl;
     cin >> cantidadNodos;
 
     for (int i = 0; i < cantidadNodos; ++i) {
@@ -102,50 +119,108 @@ double calcularPromedio(nodo* cabeza, int& sumaTiempos) {
 }
 
 // Implementación de FIFO
-void fifo(nodo* cabeza) {
+void fifo(nodo*& cabeza) {
     nodo* actual = cabeza;
     int tiempoTotal = 0;
     int sumaTiempos = 0;
-    double promedio = calcularPromedio(cabeza, sumaTiempos);
+    int nodos = 0;
+    double promedioTiempos = 0;
 
     while (actual != nullptr) {
+        cout << "Procesos: " << nodos << endl;
+        mostrarLista(cabeza);
         tiempoTotal += actual->t;
+        sumaTiempos += tiempoTotal;
         cout << "Proceso ID: " << actual->id
              << " - Tiempo del proceso: " << actual->t
              << " - Tiempo acumulado: " << tiempoTotal << endl;
+
         actual = actual->siguiente;
+        nodos++;
+
+        eliminarNodo(cabeza);
     }
 
-    cout << "Suma total de tiempos: " << sumaTiempos << endl;
-    cout << "Promedio de tiempos: " << promedio << "\n" << endl;
+    if (nodos > 0) {
+        promedioTiempos = static_cast<double>(sumaTiempos) / nodos;
+    }
+
+    cout << "Suma total de tiempos (FIFO): " << sumaTiempos << endl;
+    cout << "Promedio de tiempos (FIFO): " << promedioTiempos << "\n" << endl;
 }
+// void ejecutarYRemoverProceso(nodo*& cabeza, nodo* proceso) {
+//     if (cabeza == proceso) {
+//         cabeza = cabeza->siguiente;
+//     } else {
+//         nodo* actual = cabeza;
+//         while (actual->siguiente != proceso) {
+//             actual = actual->siguiente;
+//         }
+//         actual->siguiente = proceso->siguiente;
+//     }
+//
+//     cout << "Ejecutando proceso ID: " << proceso->id << endl;
+//     delete proceso;
+// }
 
 // Implementación de SJF
-nodo* seleccionarSJF(nodo* cabeza) {
-    nodo* menorTiempo = cabeza;
-    nodo* actual = cabeza->siguiente;
-
-    while (actual != nullptr) {
-        if (actual->t < menorTiempo->t) {
-            menorTiempo = actual;
-        }
-        actual = actual->siguiente;
+void seleccionarSJF(nodo*& cabeza) {
+    if (cabeza == nullptr) {
+        cout << "La lista está vacía." << endl;
+        return;
     }
-    return menorTiempo;
-}
 
-void ejecutarSJF(nodo*& cabeza) {
     int sumaTiempos = 0;
-    double promedio = calcularPromedio(cabeza, sumaTiempos);
+    int tiempoAcumulado = 0; // Llevará el tiempo acumulado de cada proceso
+    int nodos = 0;
+    double promedio = 0.0;
 
     while (cabeza != nullptr) {
-        nodo* proceso = seleccionarSJF(cabeza);
-        ejecutarYRemoverProceso(cabeza, proceso);
+        // Mostrar la lista de procesos antes de seleccionar el siguiente
+        cout << "Estado actual de la lista de procesos:\n";
+        mostrarLista(cabeza);
+
+        // Encontrar el proceso con el menor tiempo en la lista
+        nodo* menorTiempo = cabeza;
+        nodo* actual = cabeza->siguiente;
+        nodo* anteriorMenor = nullptr;
+        nodo* anterior = cabeza;
+
+        while (actual != nullptr) {
+            if (actual->t < menorTiempo->t) {
+                menorTiempo = actual;
+                anteriorMenor = anterior;
+            }
+            anterior = actual;
+            actual = actual->siguiente;
+        }
+
+
+        tiempoAcumulado += menorTiempo->t; // Actualizamos el tiempo acumulado
+        sumaTiempos += tiempoAcumulado; // Sumar el tiempo acumulado al total de tiempos
+        cout << "Ejecutando proceso ID: " << menorTiempo->id << ", Tiempo del proceso: " << menorTiempo->t << endl;
+
+        // Remover el proceso de menor tiempo de la lista
+        if (menorTiempo == cabeza) {
+            cabeza = cabeza->siguiente;
+        } else {
+            anteriorMenor->siguiente = menorTiempo->siguiente;
+        }
+        delete menorTiempo; // Liberar el nodo de menor tiempo
+        nodos++;
+    }
+
+    // Calcular y mostrar el promedio
+    if (nodos > 0) {
+        promedio = static_cast<double>(sumaTiempos) / nodos;
     }
 
     cout << "Suma total de tiempos (SJF): " << sumaTiempos << endl;
     cout << "Promedio de tiempos (SJF): " << promedio << "\n" << endl;
 }
+
+
+
 
 // Implementación de Round Robin
 void roundRobin(nodo*& cabeza) {
@@ -175,84 +250,70 @@ void roundRobin(nodo*& cabeza) {
 }
 
 // Implementación de prioridad
-nodo* seleccionarMayorPrioridad(nodo* cabeza) {
-    nodo* mayorPrioridad = cabeza;
-    nodo* actual = cabeza->siguiente;
+// nodo* seleccionarMayorPrioridad(nodo* cabeza) {
+//     nodo* mayorPrioridad = cabeza;
+//     nodo* actual = cabeza->siguiente;
+//
+//     while (actual != nullptr) {
+//         if (actual->p < mayorPrioridad->p) {
+//             mayorPrioridad = actual;
+//         }
+//         actual = actual->siguiente;
+//     }
+//     return mayorPrioridad;
+// }
+//
+// void ejecutarPorPrioridad(nodo*& cabeza) {
+//     int sumaTiempos = 0;
+//     double promedio = calcularPromedio(cabeza, sumaTiempos);
+//
+//     while (cabeza != nullptr) {
+//         nodo* proceso = seleccionarMayorPrioridad(cabeza);
+//         ejecutarYRemoverProceso(cabeza, proceso);
+//     }
+//
+//     cout << "Suma total de tiempos (Prioridad): " << sumaTiempos << endl;
+//     cout << "Promedio de tiempos (Prioridad): " << promedio << "\n" << endl;
+// }
 
-    while (actual != nullptr) {
-        if (actual->p < mayorPrioridad->p) {
-            mayorPrioridad = actual;
-        }
-        actual = actual->siguiente;
-    }
-    return mayorPrioridad;
-}
 
-void ejecutarPorPrioridad(nodo*& cabeza) {
-    int sumaTiempos = 0;
-    double promedio = calcularPromedio(cabeza, sumaTiempos);
-
-    while (cabeza != nullptr) {
-        nodo* proceso = seleccionarMayorPrioridad(cabeza);
-        ejecutarYRemoverProceso(cabeza, proceso);
-    }
-
-    cout << "Suma total de tiempos (Prioridad): " << sumaTiempos << endl;
-    cout << "Promedio de tiempos (Prioridad): " << promedio << "\n" << endl;
-}
-
-void ejecutarYRemoverProceso(nodo*& cabeza, nodo* proceso) {
-    if (cabeza == proceso) {
-        cabeza = cabeza->siguiente;
-    } else {
-        nodo* actual = cabeza;
-        while (actual->siguiente != proceso) {
-            actual = actual->siguiente;
-        }
-        actual->siguiente = proceso->siguiente;
-    }
-
-    cout << "Ejecutando proceso ID: " << proceso->id << endl;
-    delete proceso;
-}
 
 // Main
 int main() {
     nodo* cabeza = nullptr;
     vector<vector<int>> datos;
+
     int opcion;
 
+    cout<<"INGRESE LOS DATOS DE SU TABLA"<<endl;
+    pedirDatos(datos);
+    cout<<endl;
     do {
-        cout << "Ingrese una opción:\n";
-        cout << "1. Ingresar valores\n";
-        cout << "2. FIFO\n";
-        cout << "3. SJF\n";
-        cout << "4. Round Robin\n";
-        cout << "5. Prioridad\n";
+        cout << "Ingrese una opcion:\n";
+        cout << "1. FIFO\n";
+        cout << "2. SJF\n";
+        cout << "3. Round Robin\n";
+        cout << "4. Prioridad\n";
         cout << "0. Salir\n";
         cin >> opcion;
 
         switch (opcion) {
             case 1:
-                pedirDatos(datos);
-                break;
-            case 2:
                 transferirDatos(datos, cabeza);
                 fifo(cabeza);
                 liberarLista(cabeza);
                 break;
-            case 3:
+            case 2:
                 transferirDatos(datos, cabeza);
-                ejecutarSJF(cabeza);
-                liberarLista(cabeza);
+                seleccionarSJF(cabeza);
                 break;
-            case 4:
+            case 3:
                 transferirDatos(datos, cabeza);
                 roundRobin(cabeza);
                 break;
-            case 5:
+            case 4:
                 transferirDatos(datos, cabeza);
-                ejecutarPorPrioridad(cabeza);
+                // ejecutarPorPrioridad(cabeza);
                 liberarLista(cabeza);
                 break;
             case 0:
