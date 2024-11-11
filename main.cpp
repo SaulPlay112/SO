@@ -110,6 +110,29 @@ void fifo(nodo* cabeza) {
 }
 
 
+
+
+void ejecutarYRemoverProceso(nodo*& cabeza, nodo* proceso) {
+    if (cabeza == nullptr || proceso == nullptr) {
+        return;
+    }
+
+    if (cabeza == proceso) {
+        cabeza = cabeza->siguiente;
+    } else {
+        nodo* actual = cabeza;
+        while (actual->siguiente != proceso) {
+            actual = actual->siguiente;
+        }
+        actual->siguiente = proceso->siguiente;
+    }
+
+
+    cout << "Ejecutando proceso ID: " << proceso->id << " con prioridad " << proceso->p << endl;
+
+    delete proceso;  // Liberamos la memoria del proceso
+}
+
 void ejecutarPorPrioridad(nodo*& cabeza) {
     int tiempoTotal = 0;
     int tiempoRetornoTotal = 0;
@@ -157,28 +180,6 @@ void ejecutarPorPrioridad(nodo*& cabeza) {
     }
 }
 
-
-
-void ejecutarYRemoverProceso(nodo*& cabeza, nodo* proceso) {
-    if (cabeza == nullptr || proceso == nullptr) {
-        return;
-    }
-
-    if (cabeza == proceso) {
-        cabeza = cabeza->siguiente;
-    } else {
-        nodo* actual = cabeza;
-        while (actual->siguiente != proceso) {
-            actual = actual->siguiente;
-        }
-        actual->siguiente = proceso->siguiente;
-    }
-
-
-    cout << "Ejecutando proceso ID: " << proceso->id << " con prioridad " << proceso->p << endl;
-
-    delete proceso;  // Liberamos la memoria del proceso
-}
 
 
 // Main
